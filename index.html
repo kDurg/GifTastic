@@ -17,11 +17,9 @@
             <label for="gif-input">Search for a GIF</label>
             <input type="text" id="gif-input">
             <br>
-
             <input id="add-gifs" type="submit" value="Search for GIF">
-
-
         </form>
+
         <div id="gif-view"></div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script type="text/javascript">
@@ -35,17 +33,15 @@
                 $.ajax({
                     url: queryURL,
                     method: "GET"
-                }).then(function (response) { // cant return image or rating
-                    for (var i = 0; i < 5; i++) {
+                }).then(function (response) { 
+                    for (var i = 0; i < 10; i++) {
                         var results = response.data[i];
                         var gifDiv = $("<div class = 'gif'>"); //Holding DIV for image and rating
                         var rating = results.rating;
-                        console.log("ratings: " + response.rating);
                         var pRating = $("<p>").text("Rating: " + rating); //paragraph to show rating
                         gifDiv.append(pRating);
-                        var gifImage = results.images.fixed_height_still.url; //returns the smaller gif size
+                        var gifImage = results.images.fixed_height_still.url; //returns the still gif
                         var image = $("<img>").attr("src", gifImage);
-                        $(this).attr("data-state", "still");
                         gifDiv.append(image);
                         $("#gif-view").prepend(gifDiv);
                     }
@@ -60,8 +56,6 @@
                     a.attr("data-name", gifs[i]);
                     a.text(gifs[i]);
                     $("#buttons-view").append(a);
-                    console.log(gifs.length);
-
                 }
             }
 
@@ -75,7 +69,7 @@
             $(document).on("click", ".gif-btn", displayGifs);
             makeButtons();
 
-            $(".gif").on("click", function() {
+            $(".gif").on("click", function() { //can't click on images?
                 console.log("clicked image");  
                 // var state = $(this).attr("data-state");
                 // console.log($(this));
@@ -94,6 +88,36 @@
             });
 
         </script>
+
+
+<!-- CSS styling -->
+        <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 20px;
+            background:whitesmoke;
+        }
+
+        .gif-btn, #add-gifs {
+            background: lightskyblue;
+            height: 50px;
+            font-size: 16px;
+            font-style: inherit;
+            margin: 5px;
+            border-radius: 20%;
+        }
+
+        #buttons-view {
+            background: lightgray;
+        }
+
+        .gif{
+            float:left;
+            background: lightslategray;
+            margin: 20px;
+            border-radius: 5%;
+        }
+        </style>
 </body>
 
 </html>
