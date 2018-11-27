@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>GifTastic</title>
+</head>
+
+<body>
+    <div class="containter">
+        <h1>Gettin' GIFfy with it</h1>
+        <div id="buttons-view"></div>
+
+        <form id="gif-form">
+            <label for="gif-input">Search for a GIF</label>
+            <input type="text" id="gif-input">
+            <br>
+
+            <input id="add-gifs" type="submit" value="Search for GIF">
+
+
+        </form>
+        <div id="gif-view"></div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type="text/javascript">
+            var gifs = ["cats", "penguins", "baby elephants"];
+
+            function displayGifs() {
+
+                var gifSearch = $(this).attr("data-name");
+                var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + gifSearch + "&api_key=Xc8stAzRM4PYEsVMDMTik3hIK3Gw08vp&&rating=G";
+
+                $.ajax({
+                    url: queryURL,
+                    method: "GET"
+                }).then(function (response) { // cant return image or rating
+                    for (var i = 0; i < 5; i++) {
+                        var results = response.data[i];
+                        var gifDiv = $("<div class = 'gif'>"); //Holding DIV for image and rating
+                        var rating = results.rating;
+                        console.log("ratings: " + response.rating);
+                        var pRating = $("<p>").text("Rating: " + rating); //paragraph to show rating
+                        gifDiv.append(pRating);
+                        var gifImage = results.images.fixed_height_still.url; //returns the smaller gif size
+                        var image = $("<img>").attr("src", gifImage);
+                        $(this).attr("data-state", "still");
+                        gifDiv.append(image);
+                        $("#gif-view").prepend(gifDiv);
+                    }
+                });
+            }
+
+            function makeButtons() {
+                $("#buttons-view").empty();
+                for (var i = 0; i < gifs.length; i++) {
+                    var a = $("<button>");
+                    a.addClass("gif-btn");
+                    a.attr("data-name", gifs[i]);
+                    a.text(gifs[i]);
+                    $("#buttons-view").append(a);
+                    console.log(gifs.length);
+
+                }
+            }
+
+            $("#add-gifs").on("click", function (event) {
+                event.preventDefault();
+                var gif = $("#gif-input").val().trim();
+                gifs.push(gif);
+                makeButtons();
+            });
+
+            $(document).on("click", ".gif-btn", displayGifs);
+            makeButtons();
+
+            $(".gif").on("click", function() {
+                console.log("clicked image");  
+                // var state = $(this).attr("data-state");
+                // console.log($(this));
+                
+                // if (state === "still") {
+                //     $(this).attr("src", $(this).attr("data-animate"));
+                //     $(this).attr("data-state", "animate");
+                //     var gifImage = results.images.fixed_height_still.url; //returns the still gif
+                //     var image = $("<img>").attr("src", gifImage);
+                // } else {
+                //     $(this).attr("src", $(this).attr("data-still"));
+                //     $(this).attr("data-state", "still");
+                //     var gifImage = results.images.fixed_height.url; //returns the animated gif
+                //     var image = $("<img>").attr("src", gifImage);
+                // }
+            });
+
+        </script>
+</body>
+
+</html>
