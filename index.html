@@ -36,12 +36,16 @@
                 }).then(function (response) { 
                     for (var i = 0; i < 10; i++) {
                         var results = response.data[i];
-                        var gifDiv = $("<div class = 'gif'>"); //Holding DIV for image and rating
+                        var gifDiv = $("<div class = 'gif-container'>"); //Holding DIV for image and rating
                         var rating = results.rating;
                         var pRating = $("<p>").text("Rating: " + rating); //paragraph to show rating
                         gifDiv.append(pRating);
                         var gifImage = results.images.fixed_height_still.url; //returns the still gif
                         var image = $("<img>").attr("src", gifImage);
+                        image.attr("dataStill", results.images.fixed_height_still.url);
+                        image.attr("dataAnimate", results.images.fixed_height.url);
+                        image.attr("dataState", "still");
+                        image.attr("class", "gif");
                         gifDiv.append(image);
                         $("#gif-view").prepend(gifDiv);
                     }
@@ -69,22 +73,22 @@
             $(document).on("click", ".gif-btn", displayGifs);
             makeButtons();
 
-            $(".gif").on("click", function() { //can't click on images?
+            $("#gif-view").on("click", ".gif", function() { //can't click on images?
                 console.log("clicked image");  
-                // var state = $(this).attr("data-state");
-                // console.log($(this));
+                var state = $(this).attr("dataState");
+                console.log(state);
                 
-                // if (state === "still") {
-                //     $(this).attr("src", $(this).attr("data-animate"));
-                //     $(this).attr("data-state", "animate");
+                if (state === "still") {
+                    $(this).attr("src", $(this).attr("dataAnimate"));
+                    $(this).attr("dataState", "animate");
                 //     var gifImage = results.images.fixed_height_still.url; //returns the still gif
                 //     var image = $("<img>").attr("src", gifImage);
-                // } else {
-                //     $(this).attr("src", $(this).attr("data-still"));
-                //     $(this).attr("data-state", "still");
+                } else {
+                    $(this).attr("src", $(this).attr("dataStill"));
+                    $(this).attr("dataState", "still");
                 //     var gifImage = results.images.fixed_height.url; //returns the animated gif
                 //     var image = $("<img>").attr("src", gifImage);
-                // }
+                }
             });
 
         </script>
@@ -111,7 +115,7 @@
             background: lightgray;
         }
 
-        .gif{
+        .gif-container{
             float:left;
             background: lightslategray;
             margin: 20px;
